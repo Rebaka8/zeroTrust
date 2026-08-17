@@ -1,0 +1,75 @@
+services:
+  # =================================================================
+  # 1. PostgreSQL 16 - Enterprise Relational Persistence
+  # =================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: zt_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: zerotrust_iot
+      POSTGRES_USER: zt_admin
+      POSTGRES_PASSWORD: zt_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zt_admin -d zerotrust_iot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - zt_network
+
+  # =================================================================
+  # 2. Eclipse Mosquitto - MQTT 3.1.1/5.0 Ingestion Broker
+  # =================================================================
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: zt_mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883" # Standard MQTT
+      - "9001:9001" # MQTT over WebSockets
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/acl.conf:/mosquitto/config/acl.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    networks:
+      - zt_network
+
+  # =================================================================
+  # 3. IPFS (Kubo) - Decentralized Storage for DID & VC Documents
+  # =================================================================
+  ipfs:
+    image: ipfs/kubo:v0.28.0
+    container_name: zt_ipfs
+    restart: unless-stopped
+    environment:
+      IPFS_PATH: /data/ipfs
+    ports:
+      - "4001:4001" # P2P Swarm
+      - "5001:5001" # IPFS API
+      - "8081:8080" # IPFS Gateway (Mapped to 8081 to avoid conflicts)
+    volumes:
+      - ipfs_data:/data/ipfs
+    networks:
+      - zt_network
+
+networks:
+  zt_network:
+    name: zt_network
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: zt_postgres_data
+  mosquitto_data:
+    name: zt_mosquitto_data
+  mosquitto_log:
+    name: zt_mosquitto_log
+  ipfs_data:
+    name: zt_ipfs_data
