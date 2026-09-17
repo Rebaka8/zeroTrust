@@ -9,8 +9,10 @@ class WebSocketService {
   connect() {
     if (this.client && this.connected) return;
 
+    const wsUrl = import.meta.env.VITE_WS_URL || 'http://localhost:8085/ws';
+
     this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8085/ws'),
+      webSocketFactory: () => new SockJS(wsUrl),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
