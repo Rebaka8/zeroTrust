@@ -9,7 +9,13 @@ class WebSocketService {
   connect() {
     if (this.client && this.connected) return;
 
-    const wsUrl = import.meta.env.VITE_WS_URL || 'http://localhost:8085/ws';
+    let wsUrl = import.meta.env.VITE_WS_URL || 'http://localhost:8085/ws';
+    // SockJS client requires http/https protocol for its handshake
+    if (wsUrl.startsWith('ws://')) {
+      wsUrl = wsUrl.replace('ws://', 'http://');
+    } else if (wsUrl.startsWith('wss://')) {
+      wsUrl = wsUrl.replace('wss://', 'https://');
+    }
 
     this.client = new Client({
       webSocketFactory: () => new SockJS(wsUrl),

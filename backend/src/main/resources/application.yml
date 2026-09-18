@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: ${PORT:${SERVER_PORT:8085}}
   servlet:
     context-path: /
 
@@ -7,7 +7,7 @@ spring:
   application:
     name: zerotrust-iot-backend
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   jpa:
     open-in-view: false
   threads:
@@ -17,28 +17,28 @@ spring:
 # JWT Security Configuration
 app:
   jwt:
-    secret: ${APP_JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
-    expiration-ms: 86400000 # 24 hours
+    secret: ${APP_JWT_SECRET:${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
   cors:
-    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,https://zero-trust-snowy.vercel.app}
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,https://zero-trust-snowy.vercel.app}}
 
 # Blockchain Configuration
 blockchain:
-  rpc-url: http://127.0.0.1:8545
-  chain-id: 31337
+  rpc-url: ${BLOCKCHAIN_RPC_URL:http://127.0.0.1:8545}
+  chain-id: ${CHAIN_ID:31337}
   contracts:
-    did-registry: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-    device-registry: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
-    access-control: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
-    audit-log: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
-  private-key: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+    did-registry: ${CONTRACT_DID_REGISTRY:"0x5FbDB2315678afecb367f032d93F642f64180aa3"}
+    device-registry: ${CONTRACT_DEVICE_REGISTRY:"0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"}
+    access-control: ${CONTRACT_ACCESS_CONTROL:"0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"}
+    audit-log: ${CONTRACT_AUDIT_LOG:"0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"}
+  private-key: ${DEPLOYER_PRIVATE_KEY:"0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"}
 
 # MQTT Broker Configuration
 mqtt:
-  broker-url: tcp://localhost:1883
-  client-id: zt-backend-core
-  username: zt_broker_user
-  password: zt_broker_password
+  broker-url: ${MQTT_BROKER_URL:${app.mqtt.broker-url:tcp://localhost:1883}}
+  client-id: ${MQTT_CLIENT_ID:${app.mqtt.client-id:zt-backend-core}}
+  username: ${MQTT_USERNAME:zt_broker_user}
+  password: ${MQTT_PASSWORD:zt_broker_password}
   topics:
     telemetry: iot/+/telemetry
     status: iot/+/status

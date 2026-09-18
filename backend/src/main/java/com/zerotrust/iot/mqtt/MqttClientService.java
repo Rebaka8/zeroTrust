@@ -22,10 +22,10 @@ public class MqttClientService implements MqttCallbackExtended {
     private final TelemetryIngestService telemetryIngestService;
     private final ObjectMapper objectMapper;
 
-    @Value("${app.mqtt.broker-url:tcp://localhost:1883}")
+    @Value("${mqtt.broker-url:${app.mqtt.broker-url:tcp://localhost:1883}}")
     private String brokerUrl;
 
-    @Value("${app.mqtt.client-id:ZeroTrustBackendIngestionNode}")
+    @Value("${mqtt.client-id:${app.mqtt.client-id:ZeroTrustBackendIngestionNode}}")
     private String clientId;
 
     private MqttAsyncClient mqttClient;
