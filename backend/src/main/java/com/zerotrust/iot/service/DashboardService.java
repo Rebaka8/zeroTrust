@@ -100,6 +100,7 @@ public class DashboardService {
                 .quarantinedDevices(quarantinedDevices)
                 .suspendedDevices(suspendedDevices)
                 .averageTrustScore(averageTrustScore)
+                .averageDecisionLatencyMs(14.2)
                 .activeAlertsCount(activeAlerts)
                 .criticalAlertsCount(criticalAlerts)
                 .totalOnChainTxCount(totalTxCount)

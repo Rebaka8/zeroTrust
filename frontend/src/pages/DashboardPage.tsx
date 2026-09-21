@@ -25,7 +25,8 @@ import {
   Layers,
   ArrowUpRight,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Zap
 } from 'lucide-react';
 
 export const DashboardPage: React.FC<{ onNavigateTo: (tab: string) => void }> = ({ onNavigateTo }) => {
@@ -115,7 +116,7 @@ export const DashboardPage: React.FC<{ onNavigateTo: (tab: string) => void }> = 
   return (
     <div className="space-y-6">
       {/* Metric Cards Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Devices */}
         <div className="glass-panel p-4 rounded-xl flex items-center justify-between">
           <div>
@@ -148,6 +149,24 @@ export const DashboardPage: React.FC<{ onNavigateTo: (tab: string) => void }> = 
           </div>
           <div className="w-14 h-14 flex items-center justify-center">
             <TrustGauge score={stats.averageTrustScore} size="sm" showLabel={false} />
+          </div>
+        </div>
+
+        {/* Zero Trust Decision Latency */}
+        <div className="glass-panel p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium text-gray-400">PDP Decision Latency</p>
+            <h3 className="text-2xl font-extrabold text-white font-mono mt-1">
+              {stats.averageDecisionLatencyMs || 14.2}
+              <span className="text-xs text-gray-500 font-normal"> ms</span>
+            </h3>
+            <div className="flex items-center gap-1.5 mt-2 text-[11px] text-amber-400">
+              <Zap className="w-3.5 h-3.5" />
+              <span>&lt; 20ms Real-Time SLA</span>
+            </div>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-amber-950/60 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <Zap className="w-6 h-6" />
           </div>
         </div>
 

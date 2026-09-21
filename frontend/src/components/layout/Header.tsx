@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Shield, Radio, LogOut, Wallet, CheckCircle2 } from 'lucide-react';
+import { Shield, Radio, LogOut, Wallet, CheckCircle2, Zap, Activity } from 'lucide-react';
+import api from '../../services/api';
 
 interface HeaderProps {
   title: string;
@@ -10,6 +11,36 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ title, subtitle, onOpenRegisterModal }) => {
   const { user, logout } = useAuth();
+  const [pingMs, setPingMs] = useState<number | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const measurePing = async () => {
+      const start = performance.now();
+      try {
+        await api.get('/ping');
+        const duration = Math.round(performance.now() - start);
+        if (isMounted) setPingMs(duration);
+      } catch (e) {
+        // Fallback to testing root endpoint if /ping is not yet deployed
+        try {
+          await api.get('');
+          const duration = Math.round(performance.now() - start);
+          if (isMounted) setPingMs(duration);
+        } catch {
+          if (isMounted) setPingMs(null);
+        }
+      }
+    };
+
+    measurePing();
+    const interval = setInterval(measurePing, 6000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const truncateAddress = (addr?: string) => {
     if (!addr) return '';
@@ -28,6 +59,24 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle, onOpenRegisterM
 
       {/* Right Controls */}
       <div className="flex items-center gap-3">
+        {/* Live Round-Trip Latency Badge */}
+        <div
+          className={`hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-mono shadow-sm transition-all ${
+            pingMs === null
+              ? 'bg-gray-900/60 border-gray-700/40 text-gray-400'
+              : pingMs < 120
+              ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+              : pingMs < 300
+              ? 'bg-amber-950/40 border-amber-500/40 text-amber-300'
+              : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
+          }`}
+          title="Live Cloud-to-Edge Round-Trip API Latency"
+        >
+          <Zap className={`w-3.5 h-3.5 ${pingMs !== null && pingMs < 120 ? 'text-emerald-400' : 'text-amber-400'} animate-pulse`} />
+          <span className="font-bold">{pingMs !== null ? `${pingMs} ms` : 'Measuring...'}</span>
+          <span className="text-[10px] text-gray-400 font-sans uppercase tracking-wider">Latency</span>
+        </div>
+
         {/* Real-Time WebSocket Link Status */}
         <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />

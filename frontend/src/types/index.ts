@@ -113,6 +113,7 @@ export interface DashboardStats {
   quarantinedDevices: number;
   suspendedDevices: number;
   averageTrustScore: number;
+  averageDecisionLatencyMs?: number;
   activeAlertsCount: number;
   criticalAlertsCount: number;
   totalOnChainTxCount: number;
@@ -256,6 +257,7 @@ export interface AttackSimulationResult {
   anomalyIndicators: string[];
   generatedAlert?: SecurityAlert;
   updatedTrustScore?: TrustScore;
+  defenseLatencyMs?: number;
   executedAt: string;
 }
 

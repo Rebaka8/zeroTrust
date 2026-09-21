@@ -23,11 +23,12 @@ public class AttackSimulationResponse {
     private List<String> anomalyIndicators;
     private SecurityAlertResponse generatedAlert;
     private TrustScoreResponse updatedTrustScore;
+    private Double defenseLatencyMs;
     private Instant executedAt;
 
     public AttackSimulationResponse() {}
 
-    public AttackSimulationResponse(UUID simulationId, AttackType attackType, UUID targetDeviceId, String targetDeviceName, String targetDidUri, boolean attackDetected, boolean automatedQuarantineTriggered, DecisionType pdpDecision, Integer preAttackTrustScore, Integer postAttackTrustScore, String defenseSummary, List<String> anomalyIndicators, SecurityAlertResponse generatedAlert, TrustScoreResponse updatedTrustScore, Instant executedAt) {
+    public AttackSimulationResponse(UUID simulationId, AttackType attackType, UUID targetDeviceId, String targetDeviceName, String targetDidUri, boolean attackDetected, boolean automatedQuarantineTriggered, DecisionType pdpDecision, Integer preAttackTrustScore, Integer postAttackTrustScore, String defenseSummary, List<String> anomalyIndicators, SecurityAlertResponse generatedAlert, TrustScoreResponse updatedTrustScore, Double defenseLatencyMs, Instant executedAt) {
         this.simulationId = simulationId;
         this.attackType = attackType;
         this.targetDeviceId = targetDeviceId;
@@ -42,6 +43,7 @@ public class AttackSimulationResponse {
         this.anomalyIndicators = anomalyIndicators;
         this.generatedAlert = generatedAlert;
         this.updatedTrustScore = updatedTrustScore;
+        this.defenseLatencyMs = defenseLatencyMs;
         this.executedAt = executedAt;
     }
 
@@ -64,6 +66,7 @@ public class AttackSimulationResponse {
         private List<String> anomalyIndicators;
         private SecurityAlertResponse generatedAlert;
         private TrustScoreResponse updatedTrustScore;
+        private Double defenseLatencyMs;
         private Instant executedAt;
 
         public Builder simulationId(UUID simulationId) { this.simulationId = simulationId; return this; }
@@ -80,10 +83,11 @@ public class AttackSimulationResponse {
         public Builder anomalyIndicators(List<String> anomalyIndicators) { this.anomalyIndicators = anomalyIndicators; return this; }
         public Builder generatedAlert(SecurityAlertResponse generatedAlert) { this.generatedAlert = generatedAlert; return this; }
         public Builder updatedTrustScore(TrustScoreResponse updatedTrustScore) { this.updatedTrustScore = updatedTrustScore; return this; }
+        public Builder defenseLatencyMs(Double defenseLatencyMs) { this.defenseLatencyMs = defenseLatencyMs; return this; }
         public Builder executedAt(Instant executedAt) { this.executedAt = executedAt; return this; }
 
         public AttackSimulationResponse build() {
-            return new AttackSimulationResponse(simulationId, attackType, targetDeviceId, targetDeviceName, targetDidUri, attackDetected, automatedQuarantineTriggered, pdpDecision, preAttackTrustScore, postAttackTrustScore, defenseSummary, anomalyIndicators, generatedAlert, updatedTrustScore, executedAt);
+            return new AttackSimulationResponse(simulationId, attackType, targetDeviceId, targetDeviceName, targetDidUri, attackDetected, automatedQuarantineTriggered, pdpDecision, preAttackTrustScore, postAttackTrustScore, defenseSummary, anomalyIndicators, generatedAlert, updatedTrustScore, defenseLatencyMs, executedAt);
         }
     }
 
@@ -128,6 +132,9 @@ public class AttackSimulationResponse {
 
     public TrustScoreResponse getUpdatedTrustScore() { return updatedTrustScore; }
     public void setUpdatedTrustScore(TrustScoreResponse updatedTrustScore) { this.updatedTrustScore = updatedTrustScore; }
+
+    public Double getDefenseLatencyMs() { return defenseLatencyMs; }
+    public void setDefenseLatencyMs(Double defenseLatencyMs) { this.defenseLatencyMs = defenseLatencyMs; }
 
     public Instant getExecutedAt() { return executedAt; }
     public void setExecutedAt(Instant executedAt) { this.executedAt = executedAt; }

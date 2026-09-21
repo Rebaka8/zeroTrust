@@ -32,8 +32,16 @@ public class RootController {
         links.put("devices", "/api/v1/devices");
         links.put("dashboardStats", "/api/v1/dashboard/stats");
         links.put("auditLogs", "/api/v1/audit/logs");
-
         response.put("endpoints", links);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/v1/ping")
+    @Operation(summary = "Real-time health ping and latency measurement endpoint")
+    public ResponseEntity<Map<String, Object>> ping() {
+        return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "timestamp", System.currentTimeMillis()
+        ));
     }
 }

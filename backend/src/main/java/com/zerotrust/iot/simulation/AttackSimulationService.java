@@ -120,6 +120,7 @@ public class AttackSimulationService {
 
     @Transactional
     public AttackSimulationResponse executeAttack(AttackSimulationRequest request) {
+        long startNs = System.nanoTime();
         UUID deviceId = request.getTargetDeviceId();
 
         Device device;
@@ -303,6 +304,9 @@ public class AttackSimulationService {
                 .triggeredAt(savedAlert.getTriggeredAt())
                 .build();
 
+        double latencyMs = (System.nanoTime() - startNs) / 1_000_000.0;
+        double defenseLatencyMs = Math.max(0.5, Math.round(latencyMs * 100.0) / 100.0);
+
         return AttackSimulationResponse.builder()
                 .simulationId(UUID.randomUUID())
                 .attackType(request.getAttackType())
@@ -318,6 +322,7 @@ public class AttackSimulationService {
                 .anomalyIndicators(anomalies)
                 .generatedAlert(alertResponse)
                 .updatedTrustScore(postTrust)
+                .defenseLatencyMs(defenseLatencyMs)
                 .executedAt(Instant.now())
                 .build();
     }

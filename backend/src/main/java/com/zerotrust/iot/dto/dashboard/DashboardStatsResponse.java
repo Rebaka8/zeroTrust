@@ -13,6 +13,7 @@ public class DashboardStatsResponse {
     private long quarantinedDevices;
     private long suspendedDevices;
     private double averageTrustScore;
+    private double averageDecisionLatencyMs;
     private long activeAlertsCount;
     private long criticalAlertsCount;
     private long totalOnChainTxCount;
@@ -23,12 +24,13 @@ public class DashboardStatsResponse {
 
     public DashboardStatsResponse() {}
 
-    public DashboardStatsResponse(long totalDevices, long activeDevices, long quarantinedDevices, long suspendedDevices, double averageTrustScore, long activeAlertsCount, long criticalAlertsCount, long totalOnChainTxCount, List<DeviceResponse> topDevices, List<SecurityAlertResponse> recentAlerts, List<AuditLogResponse> recentAuditLogs, List<BlockchainTxResponse> recentTransactions) {
+    public DashboardStatsResponse(long totalDevices, long activeDevices, long quarantinedDevices, long suspendedDevices, double averageTrustScore, double averageDecisionLatencyMs, long activeAlertsCount, long criticalAlertsCount, long totalOnChainTxCount, List<DeviceResponse> topDevices, List<SecurityAlertResponse> recentAlerts, List<AuditLogResponse> recentAuditLogs, List<BlockchainTxResponse> recentTransactions) {
         this.totalDevices = totalDevices;
         this.activeDevices = activeDevices;
         this.quarantinedDevices = quarantinedDevices;
         this.suspendedDevices = suspendedDevices;
         this.averageTrustScore = averageTrustScore;
+        this.averageDecisionLatencyMs = averageDecisionLatencyMs;
         this.activeAlertsCount = activeAlertsCount;
         this.criticalAlertsCount = criticalAlertsCount;
         this.totalOnChainTxCount = totalOnChainTxCount;
@@ -48,6 +50,7 @@ public class DashboardStatsResponse {
         private long quarantinedDevices;
         private long suspendedDevices;
         private double averageTrustScore;
+        private double averageDecisionLatencyMs;
         private long activeAlertsCount;
         private long criticalAlertsCount;
         private long totalOnChainTxCount;
@@ -61,6 +64,7 @@ public class DashboardStatsResponse {
         public Builder quarantinedDevices(long quarantinedDevices) { this.quarantinedDevices = quarantinedDevices; return this; }
         public Builder suspendedDevices(long suspendedDevices) { this.suspendedDevices = suspendedDevices; return this; }
         public Builder averageTrustScore(double averageTrustScore) { this.averageTrustScore = averageTrustScore; return this; }
+        public Builder averageDecisionLatencyMs(double averageDecisionLatencyMs) { this.averageDecisionLatencyMs = averageDecisionLatencyMs; return this; }
         public Builder activeAlertsCount(long activeAlertsCount) { this.activeAlertsCount = activeAlertsCount; return this; }
         public Builder criticalAlertsCount(long criticalAlertsCount) { this.criticalAlertsCount = criticalAlertsCount; return this; }
         public Builder totalOnChainTxCount(long totalOnChainTxCount) { this.totalOnChainTxCount = totalOnChainTxCount; return this; }
@@ -70,7 +74,7 @@ public class DashboardStatsResponse {
         public Builder recentTransactions(List<BlockchainTxResponse> recentTransactions) { this.recentTransactions = recentTransactions; return this; }
 
         public DashboardStatsResponse build() {
-            return new DashboardStatsResponse(totalDevices, activeDevices, quarantinedDevices, suspendedDevices, averageTrustScore, activeAlertsCount, criticalAlertsCount, totalOnChainTxCount, topDevices, recentAlerts, recentAuditLogs, recentTransactions);
+            return new DashboardStatsResponse(totalDevices, activeDevices, quarantinedDevices, suspendedDevices, averageTrustScore, averageDecisionLatencyMs, activeAlertsCount, criticalAlertsCount, totalOnChainTxCount, topDevices, recentAlerts, recentAuditLogs, recentTransactions);
         }
     }
 
@@ -88,6 +92,9 @@ public class DashboardStatsResponse {
 
     public double getAverageTrustScore() { return averageTrustScore; }
     public void setAverageTrustScore(double averageTrustScore) { this.averageTrustScore = averageTrustScore; }
+
+    public double getAverageDecisionLatencyMs() { return averageDecisionLatencyMs; }
+    public void setAverageDecisionLatencyMs(double averageDecisionLatencyMs) { this.averageDecisionLatencyMs = averageDecisionLatencyMs; }
 
     public long getActiveAlertsCount() { return activeAlertsCount; }
     public void setActiveAlertsCount(long activeAlertsCount) { this.activeAlertsCount = activeAlertsCount; }
