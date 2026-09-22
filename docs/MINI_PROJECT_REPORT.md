@@ -62,46 +62,54 @@ The overarching objective of this research is to design, implement, and empirica
 
 ## 5. Proposed Method & Architecture
 
+![Figure 0: End-to-End Multi-Tier Zero Trust Architecture for IoT Networks](./graphs/architecture_diagram.png)
+*Figure 0: Five-Tier Zero Trust Architecture: Layer 1 Edge Fleet with W3C DIDs, Layer 2 MQTT Transport Broker, Layer 3 Spring Boot 3 Core PDP Engine, Layer 4 Blockchain Smart Contracts & IPFS, and Layer 5 Executive React 18 Command Center.*
+
 ```mermaid
 flowchart TB
     subgraph EdgeLayer ["Layer 1: Heterogeneous IoT Edge Fleet"]
-        N1["ESP32-S3 Sensor Node\n(DID: did:zt:dev:0xE37D)\n[Temp / Humidity]"]
-        N2["RPi CM4 Gateway\n(DID: did:zt:dev:0xFBC0)\n[Industrial Modbus]"]
-        N3["STM32F4 Actuator\n(DID: did:zt:dev:0x8053)\n[Water Treatment]"]
-        N4["Jetson Orin Nano\n(DID: did:zt:dev:0x5680)\n[Perimeter Vision]"]
+        N1["ESP32-S3 Sensor Node<br/>(DID: did:zt:dev:0xE37D)<br/>[Temp / Humidity]"]
+        N2["RPi CM4 Gateway<br/>(DID: did:zt:dev:0xFBC0)<br/>[Industrial Modbus]"]
+        N3["STM32F4 Actuator<br/>(DID: did:zt:dev:0x8053)<br/>[Water Treatment]"]
+        N4["Jetson Orin Nano<br/>(DID: did:zt:dev:0x5680)<br/>[Perimeter Vision]"]
     end
 
     subgraph IngestionLayer ["Layer 2: Secure Transport & Ingestion"]
-        MQTT["Eclipse Mosquitto Broker\n(Mutual TLS 1.3 / MQTT 5.0)\nTopics: iot/+/telemetry"]
+        MQTT["Eclipse Mosquitto Broker<br/>(Mutual TLS 1.3 / MQTT 5.0)<br/>Topics: iot/+/telemetry"]
     end
 
     subgraph TrustEngine ["Layer 3: Zero Trust Core PDP & Attestation Engine"]
-        Ingest["Telemetry Ingest Service\n(Spring Boot 3 + Java 21)"]
-        TrustCalc["Mathematical Trust Scoring Engine\nT(t) Multi-Factor Formulation"]
-        PDP["Policy Decision Point (PDP)\nABAC Policy Enforcement"]
-        Quarantine["Autonomous Quarantine\nIsolation Controller"]
+        Ingest["Telemetry Ingest Service<br/>(Spring Boot 3 + Java 21)"]
+        TrustCalc["Mathematical Trust Scoring Engine<br/>T(t) Multi-Factor Formulation"]
+        PDP["Policy Decision Point (PDP)<br/>ABAC Policy Enforcement"]
+        Quarantine["Autonomous Quarantine<br/>Isolation Controller"]
     end
 
     subgraph BlockchainLayer ["Layer 4: Immutable Ledger & Decentralized Storage"]
-        SC1["DIDRegistry.sol\n(W3C DID Document Hashes)"]
-        SC2["AccessControl.sol\n(On-Chain ABAC Policies)"]
-        SC3["AuditLog.sol\n(SHA-256 Tamper-Proof Trail)"]
-        IPFS["IPFS Kubo Cluster\n(Verifiable Credential Schemas)"]
+        SC1["DIDRegistry.sol<br/>(W3C DID Document Hashes)"]
+        SC2["AccessControl.sol<br/>(On-Chain ABAC Policies)"]
+        SC3["AuditLog.sol<br/>(SHA-256 Tamper-Proof Trail)"]
+        IPFS["IPFS Kubo Cluster<br/>(Verifiable Credential Schemas)"]
     end
 
     subgraph AppLayer ["Layer 5: Executive Command Center"]
-        UI["React 18 / Vite Security Mesh\n(Live WebSocket & Fleet Management)"]
+        UI["React 18 / Vite Security Mesh<br/>(Live WebSocket & Fleet Management)"]
     end
 
-    N1 & N2 & N3 & N4 -->|Signed Telemetry Packets| MQTT
-    MQTT -->|Ingress Queue| Ingest
+    N1 -->|"Signed Telemetry"| MQTT
+    N2 -->|"Signed Telemetry"| MQTT
+    N3 -->|"Signed Telemetry"| MQTT
+    N4 -->|"Signed Telemetry"| MQTT
+    MQTT -->|"Ingress Queue"| Ingest
     Ingest --> TrustCalc
     TrustCalc --> PDP
-    PDP -->|T(t) < 35 Breach| Quarantine
-    Quarantine -.->|Revoke ACL / Isolate| MQTT
-    TrustCalc -->|State & Audit Sync| SC1 & SC2 & SC3
-    Ingest -->|W3C VC Proofs| IPFS
-    PDP -->|Real-Time WebSocket Stream| UI
+    PDP -->|"Trust Breach: T(t) &lt; 35"| Quarantine
+    Quarantine -.->|"Revoke Broker ACL / Isolate"| MQTT
+    TrustCalc -->|"State & Audit Sync"| SC1
+    TrustCalc -->|"Policy Query"| SC2
+    TrustCalc -->|"Immutable Log"| SC3
+    Ingest -->|"W3C VC Proofs"| IPFS
+    PDP -->|"Real-Time WebSocket Stream"| UI
 ```
 
 The proposed architecture adopts a decoupled, five-tier Clean Architecture model. At **Layer 1**, edge nodes cryptographically sign telemetry payloads with local hardware private keys. At **Layer 2**, an Eclipse Mosquitto broker ingests packets over MQTT 5.0 with mutual TLS. At **Layer 3**, the Spring Boot 3 Core PDP Engine processes incoming packets using high-concurrency Java 21 virtual threads. 
