@@ -32,6 +32,7 @@ import {
 export const DashboardPage: React.FC<{ onNavigateTo: (tab: string) => void }> = ({ onNavigateTo }) => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [telemetryHistory, setTelemetryHistory] = useState<{ time: string; temp: number; cpu: number; packets: number }[]>([]);
 
   const { lastTelemetry, lastAlert } = useWebSocket();
@@ -81,6 +82,7 @@ export const DashboardPage: React.FC<{ onNavigateTo: (tab: string) => void }> = 
   const loadDashboard = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await auditService.getDashboardStats();
       setStats(data);
 
@@ -95,19 +97,56 @@ export const DashboardPage: React.FC<{ onNavigateTo: (tab: string) => void }> = 
         };
       });
       setTelemetryHistory(initialTimeline);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to load dashboard stats:', e);
+      setError(e?.response?.data?.message || 'Failed to load telemetry and fleet metrics from backend.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading || !stats) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
           <span className="text-xs font-mono text-gray-400">Loading Zero Trust Security Mesh...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="glass-panel p-8 rounded-2xl max-w-md w-full text-center space-y-4 border border-rose-500/30">
+          <div className="w-12 h-12 mx-auto rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-white">Connection or Session Error</h3>
+            <p className="text-xs text-gray-400 mt-1">
+              {error || 'Unable to load dashboard metrics from backend.'}
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              onClick={loadDashboard}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition-colors"
+            >
+              Retry Connection
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('zt_token');
+                localStorage.removeItem('zt_user');
+                window.dispatchEvent(new Event('auth:unauthorized'));
+              }}
+              className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs font-semibold transition-colors border border-gray-700"
+            >
+              Sign In Again
+            </button>
+          </div>
         </div>
       </div>
     );

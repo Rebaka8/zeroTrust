@@ -15,6 +15,6 @@ services:
       - key: APP_JWT_SECRET
         generateValue: true
       - key: APP_CORS_ALLOWED_ORIGINS
-        value: "http://localhost:5173,http://localhost:3000,https://zero-trust-snowy.vercel.app"
+        value: "http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174,http://localhost:3000,https://zero-trust-snowy.vercel.app"
       - key: JWT_EXPIRATION_MS
         value: "86400000"

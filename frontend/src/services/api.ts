@@ -22,15 +22,17 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle Unauthorized
+// Response Interceptor: Handle Unauthorized or Forbidden (expired session)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      // Clear token if expired or unauthorized
-      if (!window.location.pathname.includes('/login')) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      // Don't intercept actual login/register credential errors on /auth/
+      const isAuthEndpoint = error.config?.url?.includes('/auth/');
+      if (!isAuthEndpoint) {
         localStorage.removeItem('zt_token');
         localStorage.removeItem('zt_user');
+        window.dispatchEvent(new Event('auth:unauthorized'));
       }
     }
     return Promise.reject(error);
