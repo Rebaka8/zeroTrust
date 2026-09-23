@@ -61,3 +61,12 @@ logs/
 *.db
 backend/*.db
 docker/volumes/
+
+# --- Academic & Generated Reports ---
+*.pdf
+*.html
+docs/*.pdf
+docs/*.html
+docs/*REPORT*
+docs/graphs/preview/
+docs/graphs/test_*.png
